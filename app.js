@@ -1,32 +1,45 @@
 const express = require("express")
 const bodyParser = require("body-parser")
+const mongoose = require("mongoose")
 
 const app = express()
 const port = 80
-
-let items = []
 
 app.set("view engine", "ejs")
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static("public"))
 
-app.get("/", function (req, res) {
-    let date = new Date()
-    const options = {
-        weekday: "long",
-        day: "numeric",
-        month: "long"
-    }
-    let day = date.toLocaleDateString("en-US", options)
+mongoose.connect("mongodb://127.0.0.1:27017/todolistDB")
 
-    res.render("list", { day: day, items: items })
+const itemsSchema = new mongoose.Schema({
+    _id: Number,
+    name: String
+})
+
+const Item = mongoose.model("Item", itemsSchema)
+
+const defaultItem = new Item({
+    _id: 1,
+    name: 'Welcome to your to do list!'
+})
+
+app.get("/", function (req, res) {
+    Item.find({}, function (err, items) {
+        if (items.length === 0) {
+            Item.insertMany(defaultItem, function (err) {
+                if (err) {
+                    console.log(err)
+                }
+            })
+            res.redirect("/")
+        } else {
+            res.render("list", {items: items})
+        }
+    })
 })
 
 app.post("/", function (req, res) {
-    let item = req.body.newItem
-    items.push(item)
-
     res.redirect("/")
 })
 

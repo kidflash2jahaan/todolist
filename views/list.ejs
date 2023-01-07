@@ -11,20 +11,19 @@
 
 <body>
     <div class="box" id="heading">
-        <h1>
-            <%= day %>
-        </h1>
+        <h1>Today</h1>
     </div>
 
     <div class="box">
-        <% for (var i=0; i<items.length; i++) { %>
+        <% items.forEach(function(item){ %>
             <div class="item">
                 <input type="checkbox">
                 <p>
-                    <%= items[i] %>
+                    <%= item.name %>
                 </p>
             </div>
-            <% } %>
+            <% }) %>
+
                 <form class="item" action="/" method="post">
                     <input type="text" name="newItem" placeholder="New Item" autocomplete="off">
                     <button type="submit" name="button">+</button>
