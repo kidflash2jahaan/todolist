@@ -13,14 +13,12 @@ app.use(express.static("public"))
 mongoose.connect("mongodb://127.0.0.1:27017/todolistDB")
 
 const itemsSchema = new mongoose.Schema({
-    _id: Number,
     name: String
 })
 
 const Item = mongoose.model("Item", itemsSchema)
 
 const defaultItem = new Item({
-    _id: 1,
     name: 'Welcome to your to do list!'
 })
 
@@ -40,6 +38,13 @@ app.get("/", function (req, res) {
 })
 
 app.post("/", function (req, res) {
+    const itemName = req.body.newItem
+    const item = new Item({
+        name: itemName
+    })
+
+    item.save()
+
     res.redirect("/")
 })
 
