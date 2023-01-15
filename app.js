@@ -32,18 +32,29 @@ app.get("/", function (req, res) {
             })
             res.redirect("/")
         } else {
-            res.render("list", {items: items})
+            res.render("list", { items: items })
         }
     })
 })
 
-app.post("/", function (req, res) {
+app.post("/add", function (req, res) {
     const itemName = req.body.newItem
     const item = new Item({
         name: itemName
     })
 
     item.save()
+
+    res.redirect("/")
+})
+
+app.post("/delete", function (req, res) {
+    const itemId = req.body.checkbox
+    Item.findByIdAndRemove(itemId, function (err) {
+        if (err) {
+            console.log(err)
+        }
+    })
 
     res.redirect("/")
 })
